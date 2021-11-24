@@ -16,7 +16,7 @@ export default function Home() {
   return (
     <div className={wrapperCSS}>
       <Head>
-        <title>阿修羅ゲーム</title>
+        <title>普通人8面相ゲーム</title>
       </Head>
       <Board />
     </div>
