@@ -3,7 +3,7 @@ import React from "react";
 import { css } from 'linaria';
 import Board from "../components/Board"
 
-export default function Home() {
+const Home:React.VFC = () => {
 
   const wrapperCSS = css`
     width: 100vw;
@@ -21,4 +21,6 @@ export default function Home() {
       <Board />
     </div>
   )
-}
+};
+
+export default Home;
