@@ -1,6 +1,6 @@
 # OrdinalyPersonWith8Faces
 
-表情ビンゴゲーム
+- 普通人8面相ゲーム (表情ビンゴ)
 
 ## Getting Started
 
