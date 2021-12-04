@@ -1,25 +1,24 @@
 import Head from "next/head";
 import React from "react";
-import { css } from 'linaria';
 import Board from "../components/Board"
+import { Box, styled } from "@mui/system";
+
+const TopWrappaer = styled(Box)({
+  width: '100vw',
+  height: '100vh',
+  display:'flex',
+  justifyContent: 'center',
+  alignItems: 'center;',
+})
 
 const Home:React.VFC = () => {
-
-  const wrapperCSS = css`
-    width: 100vw;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  `;
-
   return (
-    <div className={wrapperCSS}>
+    <TopWrappaer>
       <Head>
         <title>普通人8面相ゲーム</title>
       </Head>
       <Board />
-    </div>
+    </TopWrappaer>
   )
 };
 
