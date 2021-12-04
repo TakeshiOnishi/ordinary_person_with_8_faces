@@ -1,41 +1,42 @@
 import React, { useEffect, useRef } from "react";
 import * as faceapi from "face-api.js";
 import { WithFaceExpressions, WithFaceDetection } from "face-api.js";
-import { css } from "linaria";
 import Cell from "./Cell";
+import { Box, styled } from "@mui/system";
+
+const MainFace = styled(Box)({
+  position: 'relative',
+})
+
+const FaceVideo = styled('video')({
+  position: 'absolute',
+  width: '100%',
+  height: '100%',
+  objectFit: 'cover',
+})
+
+const FaceCanvas = styled('canvas')({
+  position: 'absolute',
+  width: '100%',
+  height: '100%',
+  objectFit: 'cover',
+})
+
+const TopWrappaer = styled(Box)({
+  display: 'grid',
+  gridTemplateRows: '30% 30% 30%',
+  gridTemplateColumns: '30% 30% 30%',
+  width: '80%',
+  height: '80%',
+})
 
 const Board: React.VFC = () => {
-  const faceWrapperCSS = css`
-    position: relative;
-  `;
-  const faceVideoCSS = css`
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  `;
-  const faceCanvasCSS = css`
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  `;
-
-  const boardWrapperCSS = css`
-    display: grid;
-    grid-template-rows: 30% 30% 30%;
-    grid-template-columns: 30% 30% 30%;
-    width: 80%;
-    height: 80%;
-  `;
-
   const expressions: Array<{
     index: number;
     display: string;
     label: string;
     threshold: number;
-  }> = [
-    {
+  }> = [    {
       index: 0,
       display: "ハッピー！😄",
       label: "happy",
@@ -190,18 +191,17 @@ const Board: React.VFC = () => {
 
   return (
     <>
-      <div className={boardWrapperCSS}>
+      <TopWrappaer>
         {expressions.map((expression) => {
           if (expression["label"] == "CENTER") {
             return (
-              <div key={expression["label"]} className={faceWrapperCSS}>
-                <video
+              <MainFace key={expression["label"]}>
+                <FaceVideo
                   ref={faceVideoElm}
                   onLoadedMetadata={detectionStart}
-                  className={faceVideoCSS}
                 />
-                <canvas ref={faceCanvasElm} className={faceCanvasCSS} />
-              </div>
+                <FaceCanvas ref={faceCanvasElm}/>
+              </MainFace>
             );
           } else {
             return (
@@ -213,7 +213,7 @@ const Board: React.VFC = () => {
             );
           }
         })}
-      </div>
+      </TopWrappaer>
     </>
   );
 };
