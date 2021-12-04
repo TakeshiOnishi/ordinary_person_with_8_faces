@@ -1,10 +1,8 @@
-const withLinaria = require('next-linaria')
-
-module.exports = withLinaria({
+module.exports = {
   webpack(config, { isServer }) {
     if (!isServer) {
       config.resolve.fallback.fs = false;
     }
     return config;
   },
-});
+};
