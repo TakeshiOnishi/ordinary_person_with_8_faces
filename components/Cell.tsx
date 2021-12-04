@@ -1,5 +1,4 @@
 import React, { useRef, useImperativeHandle, forwardRef } from "react";
-import { css } from 'linaria';
 import { Box, styled } from '@mui/system';
 
 type updateSetImageHandle = {
