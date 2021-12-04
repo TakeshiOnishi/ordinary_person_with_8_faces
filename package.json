@@ -8,6 +8,9 @@
     "start": "next start"
   },
   "dependencies": {
+    "@emotion/react": "^11.7.0",
+    "@emotion/styled": "^11.6.0",
+    "@mui/material": "^5.2.2",
     "face-api.js": "^0.22.2",
     "fs": "^0.0.1-security",
     "linaria": "^2.1.1",
