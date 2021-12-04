@@ -1,6 +1,6 @@
 import React, { useRef, useImperativeHandle, forwardRef } from "react";
 import { css } from 'linaria';
-
+import { Box, styled } from '@mui/system';
 
 type updateSetImageHandle = {
   updateSetImage: (imageData:any) => void
@@ -10,29 +10,31 @@ type Props = {
   expression: string
 };
 
+
+const Annotation = styled('p')({
+  position: "absolute",
+  top: 0,
+  fontWeight: "bold"
+});
+
+const FaceImage = styled('img')({
+  width: '100%',
+  height: '100%',
+})
+
+const FaceBox = styled(Box)({
+  position: 'relative',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  border: '1px solid #CCC',
+  objectFit: 'cover',
+})
+
+
 const Cell:React.ForwardRefRenderFunction<updateSetImageHandle, Props> = ({expression}, ref) => {
 
   const imgRef = useRef<HTMLImageElement>(null);
-
-  const squareCSS = css`
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 1px solid #CCC;
-    object-fit: cover;
-  `;
-
-  const annotationCSS = css`
-    position: absolute;
-    top: 0px;
-    font-weight: bold;
-  `;
-
-  const faceImageCSS = css`
-    width: 100%;
-    height: 100%;
-  `;
 
   useImperativeHandle(ref, () => ({
     updateSetImage:(imageData: any) => {
@@ -41,10 +43,10 @@ const Cell:React.ForwardRefRenderFunction<updateSetImageHandle, Props> = ({expre
   }));
 
   return (
-    <div className={squareCSS}>
-      <p className={annotationCSS}>{expression}</p>
-      <img className={faceImageCSS}  ref={imgRef} />
-    </div>
+    <FaceBox>
+      <Annotation>{expression}</Annotation>
+      <FaceImage ref={imgRef}/>
+    </FaceBox>
   )
 }
 
