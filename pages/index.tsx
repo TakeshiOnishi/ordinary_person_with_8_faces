@@ -1,6 +1,8 @@
 import Head from "next/head";
 import React from "react";
 import Board from "../components/Board"
+import Stopwatch from "../components/Timer"
+
 import { Box, styled } from "@mui/system";
 
 const TopWrappaer = styled(Box)({
@@ -13,12 +15,13 @@ const TopWrappaer = styled(Box)({
 
 const Home:React.VFC = () => {
   return (
-    <TopWrappaer>
-      <Head>
-        <title>普通人8面相ゲーム</title>
-      </Head>
-      <Board />
-    </TopWrappaer>
+      <TopWrappaer>
+        <Head>
+          <title>普通人8面相ゲーム</title>
+        </Head>
+        <Board />
+        <Stopwatch />
+      </TopWrappaer>
   )
 };
 
