@@ -8,6 +8,7 @@
     "start": "next start"
   },
   "dependencies": {
+    "agora-rtc-sdk-ng": "^4.7.3",
     "face-api.js": "^0.22.2",
     "fs": "^0.0.1-security",
     "linaria": "^2.1.1",

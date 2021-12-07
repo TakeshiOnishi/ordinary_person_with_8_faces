@@ -3,6 +3,7 @@ import * as faceapi from "face-api.js";
 import { WithFaceExpressions, WithFaceDetection } from "face-api.js";
 import { css } from "linaria";
 import Cell from "./Cell";
+import AgoraRTC from 'agora-rtc-sdk-ng'
 
 const Board: React.VFC = () => {
   const faceWrapperCSS = css`
@@ -125,7 +126,7 @@ const Board: React.VFC = () => {
       expressionThresholdCheck(expressionResult);
     }
 
-    setTimeout(() => detectionStart(), 200);
+    setTimeout(() => detectionStart(), 1000);
   }
 
   const expressionThresholdCheck = (expressionResult:WithFaceExpressions<WithFaceDetection<{}>>): void => {
@@ -187,6 +188,63 @@ const Board: React.VFC = () => {
   }, []);
 
   initCellRefs();
+
+  /* Agora */
+  let client = AgoraRTC.createClient({ mode: "rtc", codec: "vp8" });
+  var localTracks = {
+    videoTrack: null
+  };
+  var remoteUsers = {};
+  // Agora client options
+  var options = {
+    appid: '5ae0f84d1ff7480ab222b1d07bbaa05a',
+    channel: '8men',
+    uid: null,
+    token: '0065ae0f84d1ff7480ab222b1d07bbaa05aIABr7KT3NwROZAUzybaxmBPmVhRwg3TDeQa0Vhb29fThZ5yEVOYAAAAAEAAyrb7j/9qwYQEAAQD/2rBh'
+  };
+
+
+  async function join() {
+
+    // join a channel and create local tracks, we can use Promise.all to run them concurrently
+    [ options.uid, localTracks.videoTrack ] = await Promise.all([
+      // join the channel
+      client.join(options.appid, options.channel, options.token || null),
+      // create local tracks, using microphone and camera
+      AgoraRTC.createScreenVideoTrack()
+    ]);
+
+    // play local video track
+    localTracks.videoTrack.play("local-player");
+    console.log(`localVideo(${options.uid})`);
+
+    // publish local tracks to channel
+    await client.publish(Object.values(localTracks));
+    console.log("publish success");
+  }
+
+  async function leave() {
+    for (trackName in localTracks) {
+      var track = localTracks[trackName];
+      if(track) {
+        track.stop();
+        track.close();
+        localTracks[trackName] = undefined;
+      }
+    }
+
+    // remove remote users and player views
+    remoteUsers = {};
+
+    // leave the channel
+    await client.leave();
+
+    console.log("client leaves channel success");
+  }
+
+  useEffect(() => {
+    join();
+  }, []);
 
   return (
     <>
