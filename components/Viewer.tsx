@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { css } from 'linaria';
 import AgoraRTC from 'agora-rtc-sdk-ng'
 
@@ -19,7 +19,7 @@ const ShareContentCSS = css`
   }
 `;
 
-const Viewer:React.ForwardRefRenderFunction<updateSetImageHandle, Props> = ({expression}, ref) => {
+const Viewer:React.VFC = () => {
 
   const [remoteUsers, setRemoteUsers] = useState([])
 

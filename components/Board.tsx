@@ -211,7 +211,7 @@ const Board: React.VFC = () => {
       // join the channel
       client.join(options.appid, options.channel, options.token || null),
       // create local tracks, using microphone and camera
-      AgoraRTC.createScreenVideoTrack()
+      AgoraRTC.createScreenVideoTrack({}, "disable")
     ]);
 
     // play local video track
@@ -221,25 +221,6 @@ const Board: React.VFC = () => {
     // publish local tracks to channel
     await client.publish(Object.values(localTracks));
     console.log("publish success");
-  }
-
-  async function leave() {
-    for (trackName in localTracks) {
-      var track = localTracks[trackName];
-      if(track) {
-        track.stop();
-        track.close();
-        localTracks[trackName] = undefined;
-      }
-    }
-
-    // remove remote users and player views
-    remoteUsers = {};
-
-    // leave the channel
-    await client.leave();
-
-    console.log("client leaves channel success");
   }
 
   useEffect(() => {
