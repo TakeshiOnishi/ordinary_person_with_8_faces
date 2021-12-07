@@ -24,10 +24,10 @@ const Board: React.VFC = () => {
 
   const boardWrapperCSS = css`
     display: grid;
-    grid-template-rows: 30% 30% 30%;
-    grid-template-columns: 30% 30% 30%;
-    width: 80%;
-    height: 80%;
+    grid-template-rows: 33% 33% 33%;
+    grid-template-columns: 33% 33% 33%;
+    width: 100vw;
+    height: 100vh;
   `;
 
   const expressions: Array<{

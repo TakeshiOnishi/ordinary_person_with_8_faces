@@ -7,7 +7,12 @@ const Viewer = dynamic(import('../components/Viewer'), { ssr: false });
 const Other:React.VFC = () => {
 
   return (
-   <Viewer />
+    <>
+      <Head>
+        <title>(管理者) 普通人8面相ゲーム</title>
+      </Head>
+      <Viewer />
+    </>
   )
 };
 

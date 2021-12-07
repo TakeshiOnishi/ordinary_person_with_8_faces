@@ -4,15 +4,19 @@ import AgoraRTC from 'agora-rtc-sdk-ng'
 
 const wrapperCSS = css`
   display: grid;
-  grid-template-rows: 50% 50%;
+  grid-template-rows: 100% 50%;
   grid-template-columns: 50% 50%;
   width: 100vw;
   height: 100vh;
 `;
 
 const ShareContentCSS = css`
+  object-fit: fill;
   width: 100%;
   height: 100%;
+  > * {
+   object-fit: fill !important;
+  }
 `;
 
 const Viewer:React.ForwardRefRenderFunction<updateSetImageHandle, Props> = ({expression}, ref) => {
