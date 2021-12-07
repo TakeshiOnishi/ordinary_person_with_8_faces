@@ -24,10 +24,12 @@ const FaceCanvas = styled('canvas')({
 
 const TopWrappaer = styled(Box)({
   display: 'grid',
-  gridTemplateRows: '30% 30% 30%',
-  gridTemplateColumns: '30% 30% 30%',
+  gridTemplateRows: '33% 33% 33%',
+  gridTemplateColumns: '33% 33% 33%',
   width: '80%',
   height: '80%',
+  marginLeft: 'auto',
+  marginRight: 'auto',
 })
 
 const Board: React.VFC = () => {
@@ -96,6 +98,7 @@ const Board: React.VFC = () => {
   const faceCanvasElm = useRef<HTMLCanvasElement>(null);
   const cellRefs = useRef<any[]>([]);
 
+  // 検知開始
   const detectionStart = async () :Promise<ReturnType<typeof setTimeout>> => {
     if (
       faceVideoElm.current.paused ||
@@ -129,6 +132,7 @@ const Board: React.VFC = () => {
     setTimeout(() => detectionStart(), 200);
   }
 
+  // 評価
   const expressionThresholdCheck = (expressionResult:WithFaceExpressions<WithFaceDetection<{}>>): void => {
     expressions.forEach((expression) => {
       if (
@@ -145,6 +149,7 @@ const Board: React.VFC = () => {
     });
   };
 
+  // 描画
   const drawCaptureFace = (squareIndex:number) => {
     const captureTmpCanvas = document.createElement("canvas");
     const captureWidth = faceVideoElm.current.clientWidth;
@@ -165,6 +170,7 @@ const Board: React.VFC = () => {
       cellRefs.current[expressions["index"]] = React.createRef();
     });
   };
+
 
   const startCam = async () :Promise<void> => {
     await faceapi.nets.ssdMobilenetv1.loadFromUri("/models");
