@@ -3,6 +3,8 @@ import * as faceapi from "face-api.js";
 import { WithFaceExpressions, WithFaceDetection } from "face-api.js";
 import Cell from "./Cell";
 import { Box, styled } from "@mui/system";
+import Stopwatch from "./Timer"
+import useStopwatch from "../hooks/useStopwatch";
 
 const MainFace = styled(Box)({
   position: 'relative',
@@ -94,6 +96,16 @@ const Board: React.VFC = () => {
     },
   ];
 
+  const {
+    seconds100,
+    seconds,
+    minutes,
+    isRunning,
+    start,
+    pause,
+    reset,
+  } = useStopwatch({ autoStart: false, offsetTimestamp: 0 });
+
   const faceVideoElm = useRef<HTMLVideoElement>(null);
   const faceCanvasElm = useRef<HTMLCanvasElement>(null);
   const cellRefs = useRef<any[]>([]);
@@ -182,7 +194,6 @@ const Board: React.VFC = () => {
       })
       .then((stream) => {
         faceVideoElm.current.srcObject = stream;
-        faceVideoElm.current.play();
       })
       .catch((errorMsg) => {
         console.log(errorMsg);
@@ -195,8 +206,26 @@ const Board: React.VFC = () => {
 
   initCellRefs();
 
+
+  const sleep = msec => new Promise(resolve => setTimeout(resolve, msec));
+  const play = async () :Promise<void> => {
+    await faceVideoElm.current.play();
+    (async () => {
+      // play()検知が開始されるまでに時間がかかる
+      // モーダルとか出したほうがいいかも??
+      await sleep(3000);
+      start();
+    })();
+  }
+
+  const pausePlaying = () :void => {
+    pause();
+    faceVideoElm.current.pause();
+  }
+
   return (
     <>
+      <Stopwatch minutes={minutes} seconds={seconds} seconds100={seconds100} isRunning={isRunning} start={play} pause={pausePlaying} reset={reset} />
       <TopWrappaer>
         {expressions.map((expression) => {
           if (expression["label"] == "CENTER") {

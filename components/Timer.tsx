@@ -9,27 +9,27 @@ const H1 = styled('h1')({
   marginBottom: '0'
 })
 
-const Stopwatch: React.VFC = () => {
+interface Props {
+  minutes: number;
+  seconds: number;
+  seconds100: number;
+  isRunning: boolean;
+  start: () => void;
+  pause: () => void;
+  reset: () => void;
+}
 
-  const {
-    seconds100,
-    seconds,
-    minutes,
-    isRunning,
-    start,
-    pause,
-  } = useStopwatch({ autoStart: false, offsetTimestamp: 0 });
-
+const Stopwatch: React.VFC<Props> = (props) => {
   return (
     <div style={{textAlign: 'center'}}>
       <H1>経過時間</H1>
       <div style={{fontSize: '90px', lineHeight: '1em'}}>
-        <span>{zeroPadding(minutes)}</span>:<span>{zeroPadding(seconds)}</span>:<span>{zeroPadding(seconds100)}</span>
+        <span>{zeroPadding(props.minutes)}</span>:<span>{zeroPadding(props.seconds)}</span>:<span>{zeroPadding(props.seconds100)}</span>
       </div>
-      <p style={{marginBottom: '0', marginTop: '0'}}>{isRunning ? 'Running' : 'Not running'}</p>
-      <button onClick={start}>Start</button>
-      <button onClick={pause}>Pause</button>
-      {/* <button onClick={reset}>Reset</button> */}
+      <p style={{marginBottom: '0', marginTop: '0'}}>{props.isRunning ? 'Running' : 'Not running'}</p>
+      <button onClick={props.start}>Start</button>
+      <button onClick={props.pause}>Pause</button>
+      <button onClick={props.reset}>Reset</button>
     </div>
   );
 }
