@@ -20,17 +20,14 @@ const ShareContentCSS = css`
 `;
 
 const Viewer:React.VFC = () => {
-
   const [remoteUsers, setRemoteUsers] = useState([])
 
-  /* Agora */
   let client = AgoraRTC.createClient({ mode: "rtc", codec: "vp8" });
-  // Agora client options
-  var options = {
-    appid: '5ae0f84d1ff7480ab222b1d07bbaa05a',
-    channel: '8men',
+  const options = {
+    appid: process.env.NEXT_PUBLIC_AGORA_APP_ID,
+    channel: process.env.NEXT_PUBLIC_AGORA_CHANNEL_NAME,
     uid: null,
-    token: '0065ae0f84d1ff7480ab222b1d07bbaa05aIABr7KT3NwROZAUzybaxmBPmVhRwg3TDeQa0Vhb29fThZ5yEVOYAAAAAEAAyrb7j/9qwYQEAAQD/2rBh'
+    token: process.env.NEXT_PUBLIC_AGORA_TEMP_TOKEN
   };
 
 

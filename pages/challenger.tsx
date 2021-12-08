@@ -17,7 +17,7 @@ const Challenger:React.VFC = () => {
   return (
     <div className={wrapperCSS}>
       <Head>
-        <title>普通人8面相ゲーム</title>
+        <title>【挑戦者】普通人8面相ゲーム</title>
       </Head>
       <Board />
     </div>
