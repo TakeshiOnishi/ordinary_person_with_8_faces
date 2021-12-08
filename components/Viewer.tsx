@@ -68,10 +68,10 @@ const Viewer:React.VFC = () => {
 
   return (
     <div className={wrapperCSS}>
-      {remoteUsers.map(remoteUser => {
+      {remoteUsers.map((remoteUser, i) => {
         return (
           <>
-            <div id={`player-${remoteUser}`} className={ShareContentCSS}></div>
+            <div id={`player-${remoteUser}`} key={i} className={ShareContentCSS}></div>
           </>
         );
       })}
