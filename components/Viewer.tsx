@@ -1,6 +1,18 @@
 import React, { useState, useEffect } from "react";
 import { css } from 'linaria';
 import AgoraRTC from 'agora-rtc-sdk-ng'
+import { Bars } from 'react-loading-icons'
+
+const loadingCSS = css`
+  width: 100vw;
+  height: 100vh;
+  text-align: center;
+  > span {
+   display: block;
+   color: #06bcee;
+   font-size: 1.3rem;
+  }
+`;
 
 const viewerCSS = css`
   display: grid;
@@ -62,6 +74,7 @@ const Viewer:React.VFC = () => {
 
   return (
     <div className={viewerCSS}>
+      {remoteUsers.length == 0 && <> <p className={loadingCSS}><Bars fill="#06bcee" stroke="#06bcee" width="100" height="100" /> <span>... Loading ...</span></p> </> }
       {remoteUsers.map((remoteUser) => {
         return <div id={`player-${remoteUser}`} key={remoteUser} className={shareWrapCSS} />
       })}
