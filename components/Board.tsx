@@ -3,6 +3,7 @@ import * as faceapi from "face-api.js";
 import { WithFaceExpressions, WithFaceDetection } from "face-api.js";
 import { css } from "linaria";
 import Cell from "./Cell";
+import AgoraRTC from 'agora-rtc-sdk-ng'
 
 const Board: React.VFC = () => {
   const faceWrapperCSS = css`
@@ -23,10 +24,10 @@ const Board: React.VFC = () => {
 
   const boardWrapperCSS = css`
     display: grid;
-    grid-template-rows: 30% 30% 30%;
-    grid-template-columns: 30% 30% 30%;
-    width: 80%;
-    height: 80%;
+    grid-template-rows: 33% 33% 33%;
+    grid-template-columns: 33% 33% 33%;
+    width: 100vw;
+    height: 100vh;
   `;
 
   const expressions: Array<{
@@ -125,7 +126,7 @@ const Board: React.VFC = () => {
       expressionThresholdCheck(expressionResult);
     }
 
-    setTimeout(() => detectionStart(), 200);
+    setTimeout(() => detectionStart(), 1000);
   }
 
   const expressionThresholdCheck = (expressionResult:WithFaceExpressions<WithFaceDetection<{}>>): void => {
@@ -180,13 +181,36 @@ const Board: React.VFC = () => {
       .catch((errorMsg) => {
         console.log(errorMsg);
       });
+    join();
   };
 
   useEffect(() => {
     startCam();
   }, []);
-
   initCellRefs();
+
+  let client = AgoraRTC.createClient({ mode: "rtc", codec: "vp8" });
+  let localTracks = {
+    videoTrack: null
+  };
+  const options = {
+    appid: process.env.NEXT_PUBLIC_AGORA_APP_ID,
+    channel: process.env.NEXT_PUBLIC_AGORA_CHANNEL_NAME,
+    uid: null,
+    token: process.env.NEXT_PUBLIC_AGORA_TEMP_TOKEN
+  };
+
+  async function join() {
+    [ options.uid, localTracks.videoTrack ] = await Promise.all([
+      client.join(options.appid, options.channel, options.token || null),
+      AgoraRTC.createScreenVideoTrack({}, "disable")
+    ]);
+    localTracks.videoTrack.play("local-player");
+    await client.publish(Object.values(localTracks));
+  }
+
+  useEffect(() => {
+  }, []);
 
   return (
     <>

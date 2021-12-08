@@ -1159,6 +1159,11 @@ acorn@8.5.0:
   resolved "https://registry.yarnpkg.com/acorn/-/acorn-8.5.0.tgz#4512ccb99b3698c752591e9bb4472e38ad43cee2"
   integrity sha512-yXbYeFy+jUuYd3/CDcg2NkIYE991XYX/bje7LmjJigUciaeO1JR4XxXgCIV1/Zc/dRuFEyw1L0pbA+qynJkW5Q==
 
+agora-rtc-sdk-ng@^4.7.3:
+  version "4.7.3"
+  resolved "https://registry.yarnpkg.com/agora-rtc-sdk-ng/-/agora-rtc-sdk-ng-4.7.3.tgz#21108c51d1469b90804794c314275e73a3f52e06"
+  integrity sha512-6SX3S4KJmiJVqITYAoicM2aBhthzvfrM+Fwccdd3vFsBeIetbI2Ajsz3Uhm6+7gotbcorHgm47eKNZWaqpUULg==
+
 anser@1.4.9:
   version "1.4.9"
   resolved "https://registry.yarnpkg.com/anser/-/anser-1.4.9.tgz#1f85423a5dcf8da4631a341665ff675b96845760"
@@ -3340,6 +3345,11 @@ react-is@^16.8.3:
   version "16.13.1"
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.13.1.tgz#789729a4dc36de2999dc156dd6c1d9c18cea56a4"
   integrity sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==
+
+react-loading-icons@^1.0.6:
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/react-loading-icons/-/react-loading-icons-1.0.6.tgz#bd421b79a5057f33d93d37a64a08ea3a2655cc89"
+  integrity sha512-VvO1ww1CacxKCcQ9Sy4yPKRVPnM/g26ob8x74pTfYpVQjgv+n8ug0vT8i09YBuGs7L831ldqGivY2op+2vKMHw==
 
 react-refresh@0.8.3:
   version "0.8.3"

@@ -1,26 +1,18 @@
 import Head from "next/head";
 import React from "react";
-import { css } from 'linaria';
-import Board from "../components/Board"
+import dynamic from 'next/dynamic'
+const Viewer = dynamic(import('../components/Viewer'), { ssr: false });
 
-const Home:React.VFC = () => {
-
-  const wrapperCSS = css`
-    width: 100vw;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  `;
+const Other:React.VFC = () => {
 
   return (
-    <div className={wrapperCSS}>
+    <>
       <Head>
         <title>普通人8面相ゲーム</title>
       </Head>
-      <Board />
-    </div>
+      <Viewer />
+    </>
   )
 };
 
-export default Home;
+export default Other;
