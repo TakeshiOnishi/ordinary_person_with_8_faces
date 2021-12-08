@@ -12,10 +12,10 @@ yarn dev
 
 ## how
 
-- 参加者用
+- 閲覧席
   - http://localhost:3000/
-- 管理者用
-  - http://localhost:3000/other
+- 参加者用
+  - http://localhost:3000/challenger
 
 ## TODO
 
