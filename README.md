@@ -14,8 +14,10 @@ yarn dev
 
 - 閲覧席
   - http://localhost:3000/
+  - prod: https://main.d9fvybk2nkccq.amplifyapp.com/
 - 参加者用
   - http://localhost:3000/challenger
+  - prod: https://main.d9fvybk2nkccq.amplifyapp.com/challenger
 
 ## TODO
 
