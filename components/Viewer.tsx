@@ -2,15 +2,15 @@ import React, { useState, useEffect } from "react";
 import { css } from 'linaria';
 import AgoraRTC from 'agora-rtc-sdk-ng'
 
-const wrapperCSS = css`
+const viewerCSS = css`
   display: grid;
-  grid-template-rows: 100% 50%;
+  grid-template-rows: 50% 50%;
   grid-template-columns: 50% 50%;
   width: 100vw;
   height: 100vh;
 `;
 
-const ShareContentCSS = css`
+const shareWrapCSS = css`
   object-fit: fill;
   width: 100%;
   height: 100%;
@@ -18,6 +18,7 @@ const ShareContentCSS = css`
    object-fit: fill !important;
   }
 `;
+
 
 const Viewer:React.VFC = () => {
   const [remoteUsers, setRemoteUsers] = useState([])
@@ -30,47 +31,39 @@ const Viewer:React.VFC = () => {
     token: process.env.NEXT_PUBLIC_AGORA_TEMP_TOKEN
   };
 
-
   async function join() {
-
-    // add event listener to play remote tracks when remote user publishs.
     client.on("user-published", handleUserPublished);
-
-    // join a channel and create local tracks, we can use Promise.all to run them concurrently
+    client.on("user-unpublished", handleUserUnpublished);
     [ options.uid ] = await Promise.all([
-      // join the channel
       client.join(options.appid, options.channel, options.token || null)
     ]);
   }
 
+  function handleUserPublished(user, mediaType) {
+    setRemoteUsers((remoteUsers) => [...remoteUsers, user.uid]);
+    subscribe(user, mediaType);
+  }
+
   async function subscribe(user, mediaType) {
-    const uid = user.uid;
-    // subscribe to a remote user
     await client.subscribe(user, mediaType);
-    console.log("subscribe success");
     if (mediaType === 'video') {
-      user.videoTrack.play(`player-${uid}`);
+      user.videoTrack.play(`player-${user.uid}`);
     }
   }
 
-  function handleUserPublished(user, mediaType) {
-    const id = user.uid;
-    setRemoteUsers([...remoteUsers, id]);
-    subscribe(user, mediaType);
+  function handleUserUnpublished(user) {
+    setRemoteUsers((remoteUsers) => remoteUsers.filter(remoteUser => remoteUser !== user.uid))
   }
+
 
   useEffect(() => {
     join();
   }, []);
 
   return (
-    <div className={wrapperCSS}>
-      {remoteUsers.map((remoteUser, i) => {
-        return (
-          <>
-            <div id={`player-${remoteUser}`} key={i} className={ShareContentCSS}></div>
-          </>
-        );
+    <div className={viewerCSS}>
+      {remoteUsers.map((remoteUser) => {
+        return <div id={`player-${remoteUser}`} key={remoteUser} className={shareWrapCSS} />
       })}
     </div>
   )

@@ -181,20 +181,18 @@ const Board: React.VFC = () => {
       .catch((errorMsg) => {
         console.log(errorMsg);
       });
+    join();
   };
 
   useEffect(() => {
     startCam();
   }, []);
-
   initCellRefs();
 
-  /* Agora */
   let client = AgoraRTC.createClient({ mode: "rtc", codec: "vp8" });
   let localTracks = {
     videoTrack: null
   };
-  let remoteUsers = {};
   const options = {
     appid: process.env.NEXT_PUBLIC_AGORA_APP_ID,
     channel: process.env.NEXT_PUBLIC_AGORA_CHANNEL_NAME,
@@ -203,26 +201,15 @@ const Board: React.VFC = () => {
   };
 
   async function join() {
-
-    // join a channel and create local tracks, we can use Promise.all to run them concurrently
     [ options.uid, localTracks.videoTrack ] = await Promise.all([
-      // join the channel
       client.join(options.appid, options.channel, options.token || null),
-      // create local tracks, using microphone and camera
       AgoraRTC.createScreenVideoTrack({}, "disable")
     ]);
-
-    // play local video track
     localTracks.videoTrack.play("local-player");
-    console.log(`localVideo(${options.uid})`);
-
-    // publish local tracks to channel
     await client.publish(Object.values(localTracks));
-    console.log("publish success");
   }
 
   useEffect(() => {
-    join();
   }, []);
 
   return (
