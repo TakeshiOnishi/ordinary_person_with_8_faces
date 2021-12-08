@@ -88,7 +88,7 @@ const Board: React.VFC = () => {
       index: 8,
       display: "激おこ🤬",
       label: "big_angry",
-      threshold: 0.999,
+      threshold: 0.98,
     },
   ];
 
