@@ -114,6 +114,27 @@ const Board: React.VFC = () => {
   const faceCanvasElm = useRef<HTMLCanvasElement>(null);
   const cellRefs = useRef<any[]>([]);
   const [isShowRibbon, setIsShowRibbon] = useState<boolean>(false)
+  const [results, setResults] = useState({
+    happy: false,
+    neutral: false,
+    sad: false,
+    angry: false,
+    fearful: false,
+    surprised: false,
+    disgusted: false,
+    big_angry: false,
+  });
+
+  // ビンゴか確認する
+  const isBingo = () => {
+    return !Object.values(results).includes(false)
+  };
+
+  const checkResults = () => {
+    if (isBingo()) {
+      pausePlaying()
+    }
+  };
 
   const detectionStart = async () :Promise<ReturnType<typeof setTimeout>> => {
     if (
@@ -158,9 +179,14 @@ const Board: React.VFC = () => {
         if (expressionResult["expressions"]["angry"] >= 0.9999) {
           const found = expressions.find((expression) => expression["label"] == 'big_angry');
           drawCaptureFace(found['index']);
+          setResults(prev => Object.assign(prev, { big_angry: true }));
+        } else {
+          drawCaptureFace(expression["index"]);
+          setResults(prev => Object.assign(prev, {[expression.label]: true}));
+
         }
-        drawCaptureFace(expression["index"]);
       }
+      checkResults();
     });
   };
 
