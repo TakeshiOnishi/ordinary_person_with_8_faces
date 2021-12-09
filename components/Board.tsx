@@ -111,6 +111,7 @@ const Board: React.VFC = () => {
     },
   ];
 
+  let agoraClient:any;
   const faceVideoElm = useRef<HTMLVideoElement>(null);
   const faceCanvasElm = useRef<HTMLCanvasElement>(null);
   const cellRefs = useRef<any[]>([]);
@@ -127,12 +128,32 @@ const Board: React.VFC = () => {
     big_angry: false,
   });
 
-  // ビンゴか確認する
-  const isBingo = () => {
+  const {
+    seconds100,
+    seconds,
+    minutes,
+    isRunning,
+    start,
+    pause,
+    reset,
+  } = useStopwatch({ autoStart: false, offsetTimestamp: 100 });
+
+
+  let localTracks = {
+    videoTrack: null
+  };
+  const options = {
+    appid: process.env.NEXT_PUBLIC_AGORA_APP_ID,
+    channel: process.env.NEXT_PUBLIC_AGORA_CHANNEL_NAME,
+    uid: null,
+    token: process.env.NEXT_PUBLIC_AGORA_TEMP_TOKEN
+  };
+
+  const isBingo = () :boolean => {
     return !Object.values(results).includes(false)
   };
 
-  const checkResults = () => {
+  const checkResults = () :void => {
     if (isBingo()) {
       pausePlaying()
     }
@@ -164,7 +185,7 @@ const Board: React.VFC = () => {
       expressionThresholdCheck(expressionResult);
     }
 
-    setTimeout(() => detectionStart(), 1000);
+    setTimeout(() => detectionStart(), 500);
   }
 
   const expressionThresholdCheck = (expressionResult:WithFaceExpressions<WithFaceDetection<{}>>): void => {
@@ -227,45 +248,17 @@ const Board: React.VFC = () => {
     faceVideoElm.current.play();
   };
 
-
-  let client;
-
-  useEffect(() => {
-    initCellRefs();
-    startCam();
-    client = AgoraRTC.createClient({ mode: "rtc", codec: "vp8" });
-  }, []);
-
-  let localTracks = {
-    videoTrack: null
-  };
-  const options = {
-    appid: process.env.NEXT_PUBLIC_AGORA_APP_ID,
-    channel: process.env.NEXT_PUBLIC_AGORA_CHANNEL_NAME,
-    uid: null,
-    token: process.env.NEXT_PUBLIC_AGORA_TEMP_TOKEN
-  };
-
   async function join() {
     [ options.uid, localTracks.videoTrack ] = await Promise.all([
-      client.join(options.appid, options.channel, options.token || null),
+      agoraClient.join(options.appid, options.channel, options.token || null),
       AgoraRTC.createScreenVideoTrack({}, "disable")
     ]);
     localTracks.videoTrack.play("local-player");
-    await client.publish(Object.values(localTracks));
+    await agoraClient.publish(Object.values(localTracks));
   }
 
-  const {
-    seconds100,
-    seconds,
-    minutes,
-    isRunning,
-    start,
-    pause,
-    reset,
-  } = useStopwatch({ autoStart: false, offsetTimestamp: 0 });
+  const sleep = (msec:number) => new Promise(resolve => setTimeout(resolve, msec));
 
-  const sleep = msec => new Promise(resolve => setTimeout(resolve, msec));
   const startPlaying = async () :Promise<void> => {
     setIsShowRibbon(true);
     (async () => {
@@ -279,6 +272,12 @@ const Board: React.VFC = () => {
     pause();
     faceVideoElm.current.pause();
   }
+
+  useEffect(() => {
+    initCellRefs();
+    startCam();
+    agoraClient = AgoraRTC.createClient({ mode: "rtc", codec: "vp8" });
+  }, []);
 
   return (
     <>
