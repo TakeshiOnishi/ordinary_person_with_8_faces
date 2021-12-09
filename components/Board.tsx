@@ -1,9 +1,11 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import * as faceapi from "face-api.js";
 import { WithFaceExpressions, WithFaceDetection } from "face-api.js";
 import { css } from "linaria";
 import Cell from "./Cell";
 import AgoraRTC from 'agora-rtc-sdk-ng'
+import useStopwatch from "../lib/hooks/useStopwatch";
+import Stopwatch from "./Timer";
 
 const Board: React.VFC = () => {
   const faceWrapperCSS = css`
@@ -26,8 +28,25 @@ const Board: React.VFC = () => {
     display: grid;
     grid-template-rows: 33% 33% 33%;
     grid-template-columns: 33% 33% 33%;
-    width: 100vw;
-    height: 100vh;
+    height: 90vh;
+    width: 90vw;
+    margin-left: auto;
+    margin-right: auto;
+  `;
+
+  const startRibbon = css`
+    background: #696969;
+    z-index: 1;
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    margin: auto;
+    height: 200px;
+    line-height: 200px;
+    text-align: center;
+    opacity: 0.4
   `;
 
   const expressions: Array<{
@@ -95,6 +114,28 @@ const Board: React.VFC = () => {
   const faceVideoElm = useRef<HTMLVideoElement>(null);
   const faceCanvasElm = useRef<HTMLCanvasElement>(null);
   const cellRefs = useRef<any[]>([]);
+  const [isShowRibbon, setIsShowRibbon] = useState<boolean>(false)
+  const [results, setResults] = useState({
+    happy: false,
+    neutral: false,
+    sad: false,
+    angry: false,
+    fearful: false,
+    surprised: false,
+    disgusted: false,
+    big_angry: false,
+  });
+
+  // ビンゴか確認する
+  const isBingo = () => {
+    return !Object.values(results).includes(false)
+  };
+
+  const checkResults = () => {
+    if (isBingo()) {
+      pausePlaying()
+    }
+  };
 
   const detectionStart = async () :Promise<ReturnType<typeof setTimeout>> => {
     if (
@@ -139,9 +180,14 @@ const Board: React.VFC = () => {
         if (expressionResult["expressions"]["angry"] >= 0.9999) {
           const found = expressions.find((expression) => expression["label"] == 'big_angry');
           drawCaptureFace(found['index']);
+          setResults(prev => Object.assign(prev, { big_angry: true }));
+        } else {
+          drawCaptureFace(expression["index"]);
+          setResults(prev => Object.assign(prev, {[expression.label]: true}));
+
         }
-        drawCaptureFace(expression["index"]);
       }
+      checkResults();
     });
   };
 
@@ -176,7 +222,6 @@ const Board: React.VFC = () => {
       })
       .then((stream) => {
         faceVideoElm.current.srcObject = stream;
-        faceVideoElm.current.play();
       })
       .catch((errorMsg) => {
         console.log(errorMsg);
@@ -184,12 +229,15 @@ const Board: React.VFC = () => {
     join();
   };
 
-  useEffect(() => {
-    startCam();
-  }, []);
-  initCellRefs();
 
-  let client = AgoraRTC.createClient({ mode: "rtc", codec: "vp8" });
+  let client;
+
+  useEffect(() => {
+    initCellRefs();
+    startCam();
+    client = AgoraRTC.createClient({ mode: "rtc", codec: "vp8" });
+  }, []);
+
   let localTracks = {
     videoTrack: null
   };
@@ -209,11 +257,38 @@ const Board: React.VFC = () => {
     await client.publish(Object.values(localTracks));
   }
 
-  useEffect(() => {
-  }, []);
+  const {
+    seconds100,
+    seconds,
+    minutes,
+    isRunning,
+    start,
+    pause,
+    reset,
+  } = useStopwatch({ autoStart: false, offsetTimestamp: 100 });
+
+  const sleep = msec => new Promise(resolve => setTimeout(resolve, msec));
+  const startPlaying = async () :Promise<void> => {
+    setIsShowRibbon(true);
+    faceVideoElm.current.play();
+    (async () => {
+      await sleep(3000);
+      setIsShowRibbon(false)
+      start();
+    })();
+  }
+
+  const pausePlaying = () :void => {
+    pause();
+    faceVideoElm.current.pause();
+  }
 
   return (
     <>
+      <div className={startRibbon} style={{ visibility: isShowRibbon? 'visible':'hidden'}}>
+        <span style={{fontSize: '80px', color: 'white'}}>ready...</span>
+      </div>
+      <Stopwatch minutes={minutes} seconds={seconds} seconds100={seconds100} isRunning={isRunning} start={startPlaying} pause={pausePlaying} reset={reset} />
       <div className={boardWrapperCSS}>
         {expressions.map((expression) => {
           if (expression["label"] == "CENTER") {

@@ -7,11 +7,8 @@ const Board = dynamic(import('../components/Board'), { ssr: false });
 const Challenger:React.VFC = () => {
 
   const wrapperCSS = css`
-    width: 100vw;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    max-width: 100vw;
+    max-height: 100vh;
   `;
 
   return (
