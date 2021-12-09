@@ -1,10 +1,6 @@
-import React, { useState, useRef, useImperativeHandle, forwardRef, useEffect, useCallback } from "react";
+import React, { useState } from "react";
 import { zeroPadding } from "../lib/Decorator";
 import { css } from "linaria";
-
-const h1 = css`
-  marginBottom: 0;
-`;
 
 const timer = css`
   font-size: 60px;
