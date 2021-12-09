@@ -26,10 +26,16 @@ interface Props {
 }
 
 const Stopwatch: React.VFC<Props> = (props) => {
+  const [disabled, setDisabled] = useState<boolean>(false);
+  const handleOnClick = () => {
+    props.start()
+    setDisabled(true)
+  }
+
   return (
     <div style={{textAlign: 'center', marginLeft: 'auto', marginRight: 'auto'}}>
       <div style={{display: 'inline-flex'}}>
-        <button onClick={props.start} style={{marginTop: '10px', marginBottom: '10px', marginRight: '20px'}}>ゲーム開始</button>
+        <button onClick={handleOnClick} style={{marginTop: '10px', marginBottom: '10px', marginRight: '20px'}} disabled={disabled}>ゲーム開始</button>
         <div className={timer}>
           <span className={monospace}>{zeroPadding(props.minutes)}</span>:<span className={monospace}>{zeroPadding(props.seconds-2)}</span>:<span className={monospace}>{zeroPadding(props.seconds100)}</span>
         </div>
