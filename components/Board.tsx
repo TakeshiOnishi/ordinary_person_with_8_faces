@@ -114,7 +114,8 @@ const Board: React.VFC = () => {
   const faceVideoElm = useRef<HTMLVideoElement>(null);
   const faceCanvasElm = useRef<HTMLCanvasElement>(null);
   const cellRefs = useRef<any[]>([]);
-  const [isShowRibbon, setIsShowRibbon] = useState<boolean>(false)
+  const [isShowRibbon, setIsShowRibbon] = useState<boolean>(false);
+  const [isStart, setIsStart] = useState<boolean>(false);
   const [results, setResults] = useState({
     happy: false,
     neutral: false,
@@ -138,11 +139,7 @@ const Board: React.VFC = () => {
   };
 
   const detectionStart = async () :Promise<ReturnType<typeof setTimeout>> => {
-    if (
-      faceVideoElm.current.paused ||
-      faceVideoElm.current.ended ||
-      !faceapi.nets.ssdMobilenetv1
-    ) {
+    if ( !isStart || !faceapi.nets.ssdMobilenetv1) {
       return setTimeout(() => detectionStart(), 1000);
     }
 
@@ -227,6 +224,7 @@ const Board: React.VFC = () => {
         console.log(errorMsg);
       });
     join();
+    faceVideoElm.current.play();
   };
 
 
@@ -265,14 +263,13 @@ const Board: React.VFC = () => {
     start,
     pause,
     reset,
-  } = useStopwatch({ autoStart: false, offsetTimestamp: 100 });
+  } = useStopwatch({ autoStart: false, offsetTimestamp: 0 });
 
   const sleep = msec => new Promise(resolve => setTimeout(resolve, msec));
   const startPlaying = async () :Promise<void> => {
     setIsShowRibbon(true);
-    faceVideoElm.current.play();
     (async () => {
-      await sleep(3000);
+      await sleep(2000);
       setIsShowRibbon(false)
       start();
     })();
