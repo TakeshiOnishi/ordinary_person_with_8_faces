@@ -117,6 +117,7 @@ const Board: React.VFC = () => {
   const cellRefs = useRef<any[]>([]);
   const [isShowRibbon, setIsShowRibbon] = useState<boolean>(false);
   const [isStart, setIsStart] = useState<boolean>(false);
+  const gameStart = useRef(false);
   const [results, setResults] = useState({
     happy: false,
     neutral: false,
@@ -136,7 +137,7 @@ const Board: React.VFC = () => {
     start,
     pause,
     reset,
-  } = useStopwatch({ autoStart: false, offsetTimestamp: 100 });
+  } = useStopwatch({ autoStart: false, offsetTimestamp: 500 });
 
 
   let localTracks = {
@@ -160,15 +161,19 @@ const Board: React.VFC = () => {
   };
 
   const detectionStart = async () :Promise<ReturnType<typeof setTimeout>> => {
-    if ( !isStart || !faceapi.nets.ssdMobilenetv1) {
-      return setTimeout(() => detectionStart(), 1000);
+    if (
+          faceVideoElm.current.paused ||
+          faceVideoElm.current.ended ||
+          !faceapi.nets.ssdMobilenetv1) {
+
+      return setTimeout(() => detectionStart(), 500);
     }
 
     const expressionResult:WithFaceExpressions<WithFaceDetection<{}>> = await faceapi
       .detectSingleFace(faceVideoElm.current)
       .withFaceExpressions();
 
-    if (expressionResult) {
+    if (gameStart.current && expressionResult) {
       const dims = faceapi.matchDimensions(
         faceCanvasElm.current,
         faceVideoElm.current,
@@ -185,7 +190,7 @@ const Board: React.VFC = () => {
       expressionThresholdCheck(expressionResult);
     }
 
-    setTimeout(() => detectionStart(), 500);
+    setTimeout(() => detectionStart(), 200);
   }
 
   const expressionThresholdCheck = (expressionResult:WithFaceExpressions<WithFaceDetection<{}>>): void => {
@@ -195,7 +200,7 @@ const Board: React.VFC = () => {
         expression["threshold"]
       ) {
         // モデルラベル以外の例外判定
-        if (expressionResult["expressions"]["angry"] >= 0.9999) {
+        if (expressionResult["expressions"]["angry"] >= 0.98) {
           const found = expressions.find((expression) => expression["label"] == 'big_angry');
           drawCaptureFace(found['index']);
           setResults(prev => Object.assign(prev, { big_angry: true }));
@@ -240,12 +245,12 @@ const Board: React.VFC = () => {
       })
       .then((stream) => {
         faceVideoElm.current.srcObject = stream;
+        faceVideoElm.current.play();
       })
       .catch((errorMsg) => {
         console.log(errorMsg);
       });
     join();
-    faceVideoElm.current.play();
   };
 
   async function join() {
@@ -266,6 +271,7 @@ const Board: React.VFC = () => {
       setIsShowRibbon(false)
       start();
     })();
+    gameStart.current = true;
   }
 
   const pausePlaying = () :void => {
