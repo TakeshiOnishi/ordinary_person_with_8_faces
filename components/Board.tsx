@@ -190,7 +190,7 @@ const Board: React.VFC = () => {
       expressionThresholdCheck(expressionResult);
     }
 
-    setTimeout(() => detectionStart(), 200);
+    setTimeout(() => detectionStart(), 1000);
   }
 
   const expressionThresholdCheck = (expressionResult:WithFaceExpressions<WithFaceDetection<{}>>): void => {
@@ -200,7 +200,7 @@ const Board: React.VFC = () => {
         expression["threshold"]
       ) {
         // モデルラベル以外の例外判定
-        if (expressionResult["expressions"]["angry"] >= 0.98) {
+        if (expressionResult["expressions"]["angry"] >= 0.999) {
           const found = expressions.find((expression) => expression["label"] == 'big_angry');
           drawCaptureFace(found['index']);
           setResults(prev => Object.assign(prev, { big_angry: true }));
