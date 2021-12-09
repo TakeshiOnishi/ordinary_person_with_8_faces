@@ -1,9 +1,11 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import * as faceapi from "face-api.js";
 import { WithFaceExpressions, WithFaceDetection } from "face-api.js";
 import { css } from "linaria";
 import Cell from "./Cell";
 import AgoraRTC from 'agora-rtc-sdk-ng'
+import useStopwatch from "../lib/hooks/useStopwatch";
+import Stopwatch from "./Timer";
 
 const Board: React.VFC = () => {
   const faceWrapperCSS = css`
@@ -26,8 +28,24 @@ const Board: React.VFC = () => {
     display: grid;
     grid-template-rows: 33% 33% 33%;
     grid-template-columns: 33% 33% 33%;
-    width: 100vw;
-    height: 100vh;
+    height: 90vh;
+    width: 90vw;
+    margin-left: auto;
+    margin-right: auto;
+  `;
+
+  const startRibbon = css`
+    background: blue;
+    z-index: 1;
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    margin: auto;
+    height: 200px;
+    line-height: 200px;
+    text-align: center;
   `;
 
   const expressions: Array<{
@@ -95,6 +113,7 @@ const Board: React.VFC = () => {
   const faceVideoElm = useRef<HTMLVideoElement>(null);
   const faceCanvasElm = useRef<HTMLCanvasElement>(null);
   const cellRefs = useRef<any[]>([]);
+  const [isShowRibbon, setIsShowRibbon] = useState<boolean>(false)
 
   const detectionStart = async () :Promise<ReturnType<typeof setTimeout>> => {
     if (
@@ -176,7 +195,6 @@ const Board: React.VFC = () => {
       })
       .then((stream) => {
         faceVideoElm.current.srcObject = stream;
-        faceVideoElm.current.play();
       })
       .catch((errorMsg) => {
         console.log(errorMsg);
@@ -212,8 +230,43 @@ const Board: React.VFC = () => {
   useEffect(() => {
   }, []);
 
+  const {
+    seconds100,
+    seconds,
+    minutes,
+    isRunning,
+    start,
+    pause,
+    reset,
+  } = useStopwatch({ autoStart: false, offsetTimestamp: 100 });
+
+  const sleep = msec => new Promise(resolve => setTimeout(resolve, msec));
+  const startPlaying = async () :Promise<void> => {
+    // isShowibbon.current = true;
+    setIsShowRibbon(true);
+    faceVideoElm.current.play();
+    (async () => {
+      await sleep(3000);
+      setIsShowRibbon(false)
+      start();
+    })();
+  }
+
+  const pausePlaying = () :void => {
+    pause();
+    faceVideoElm.current.pause();
+  }
+
+  // TODO: 8面揃ったら、以下の処理を行う
+  // タイマーを止める
+  // パーティJSのクラッカーを鳴らす
+
   return (
     <>
+      <div className={startRibbon} style={{ visibility: isShowRibbon? 'visible':'hidden'}}>
+        ready...
+      </div>
+      <Stopwatch minutes={minutes} seconds={seconds} seconds100={seconds100} isRunning={isRunning} start={startPlaying} pause={pausePlaying} reset={reset} />
       <div className={boardWrapperCSS}>
         {expressions.map((expression) => {
           if (expression["label"] == "CENTER") {
