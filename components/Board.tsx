@@ -35,7 +35,7 @@ const Board: React.VFC = () => {
   `;
 
   const startRibbon = css`
-    background: #ff69b4;
+    background: #696969;
     z-index: 1;
     position: absolute;
     top: 0;
@@ -46,6 +46,7 @@ const Board: React.VFC = () => {
     height: 200px;
     line-height: 200px;
     text-align: center;
+    opacity: 0.4
   `;
 
   const expressions: Array<{
@@ -228,12 +229,15 @@ const Board: React.VFC = () => {
     join();
   };
 
-  useEffect(() => {
-    startCam();
-  }, []);
-  initCellRefs();
 
-  let client = AgoraRTC.createClient({ mode: "rtc", codec: "vp8" });
+  let client;
+
+  useEffect(() => {
+    initCellRefs();
+    startCam();
+    client = AgoraRTC.createClient({ mode: "rtc", codec: "vp8" });
+  }, []);
+
   let localTracks = {
     videoTrack: null
   };
@@ -253,9 +257,6 @@ const Board: React.VFC = () => {
     await client.publish(Object.values(localTracks));
   }
 
-  useEffect(() => {
-  }, []);
-
   const {
     seconds100,
     seconds,
@@ -268,7 +269,6 @@ const Board: React.VFC = () => {
 
   const sleep = msec => new Promise(resolve => setTimeout(resolve, msec));
   const startPlaying = async () :Promise<void> => {
-    // isShowibbon.current = true;
     setIsShowRibbon(true);
     faceVideoElm.current.play();
     (async () => {
@@ -282,10 +282,6 @@ const Board: React.VFC = () => {
     pause();
     faceVideoElm.current.pause();
   }
-
-  // TODO: 8面揃ったら、以下の処理を行う
-  // タイマーを止める
-  // パーティJSのクラッカーを鳴らす
 
   return (
     <>
