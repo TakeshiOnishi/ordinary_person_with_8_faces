@@ -35,7 +35,7 @@ const Board: React.VFC = () => {
   `;
 
   const startRibbon = css`
-    background: blue;
+    background: #ff69b4;
     z-index: 1;
     position: absolute;
     top: 0;
@@ -290,7 +290,7 @@ const Board: React.VFC = () => {
   return (
     <>
       <div className={startRibbon} style={{ visibility: isShowRibbon? 'visible':'hidden'}}>
-        ready...
+        <span style={{fontSize: '80px', color: 'white'}}>ready...</span>
       </div>
       <Stopwatch minutes={minutes} seconds={seconds} seconds100={seconds100} isRunning={isRunning} start={startPlaying} pause={pausePlaying} reset={reset} />
       <div className={boardWrapperCSS}>
