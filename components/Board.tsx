@@ -116,7 +116,6 @@ const Board: React.VFC = () => {
   const faceCanvasElm = useRef<HTMLCanvasElement>(null);
   const cellRefs = useRef<any[]>([]);
   const [isShowRibbon, setIsShowRibbon] = useState<boolean>(false);
-  const [isStart, setIsStart] = useState<boolean>(false);
   const gameStart = useRef(false);
   const [results, setResults] = useState({
     happy: false,
