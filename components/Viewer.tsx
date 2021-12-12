@@ -43,7 +43,7 @@ const Viewer:React.VFC = () => {
     token: process.env.NEXT_PUBLIC_AGORA_TEMP_TOKEN
   };
 
-  async function join() {
+  const join = async () => {
     agoraClient.on("user-published", handleUserPublished);
     agoraClient.on("user-unpublished", handleUserUnpublished);
     [ options.uid ] = await Promise.all([
@@ -51,19 +51,19 @@ const Viewer:React.VFC = () => {
     ]);
   }
 
-  function handleUserPublished(user, mediaType) {
+  const handleUserPublished = (user, mediaType) => {
     setRemoteUsers((remoteUsers) => [...remoteUsers, user.uid]);
     subscribe(user, mediaType);
   }
 
-  async function subscribe(user, mediaType) {
+  const subscribe = async (user, mediaType) => {
     await agoraClient.subscribe(user, mediaType);
     if (mediaType === 'video') {
       user.videoTrack.play(`player-${user.uid}`);
     }
   }
 
-  function handleUserUnpublished(user) {
+  const handleUserUnpublished = (user) => {
     setRemoteUsers((remoteUsers) => remoteUsers.filter(remoteUser => remoteUser !== user.uid))
   }
 

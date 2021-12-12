@@ -252,7 +252,7 @@ const Board: React.VFC = () => {
     join();
   };
 
-  async function join() {
+  const join = async () => {
     [ options.uid, localTracks.videoTrack ] = await Promise.all([
       agoraClient.join(options.appid, options.channel, options.token || null),
       AgoraRTC.createScreenVideoTrack({}, "disable")

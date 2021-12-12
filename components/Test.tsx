@@ -161,7 +161,7 @@ const Test: React.VFC = () => {
     token: process.env.NEXT_PUBLIC_AGORA_TEMP_TOKEN
   };
 
-  async function join() {
+  const join = async () => {
     [ options.uid, localTracks.videoTrack ] = await Promise.all([
       client.join(options.appid, options.channel, options.token || null),
       AgoraRTC.createScreenVideoTrack({}, "disable")
