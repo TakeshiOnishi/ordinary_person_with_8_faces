@@ -35,7 +35,7 @@ const shareWrapCSS = css`
 const Viewer:React.VFC = () => {
   const [remoteUsers, setRemoteUsers] = useState([])
 
-  let client = AgoraRTC.createClient({ mode: "rtc", codec: "vp8" });
+  let agoraClient;
   const options = {
     appid: process.env.NEXT_PUBLIC_AGORA_APP_ID,
     channel: process.env.NEXT_PUBLIC_AGORA_CHANNEL_NAME,
@@ -44,10 +44,10 @@ const Viewer:React.VFC = () => {
   };
 
   async function join() {
-    client.on("user-published", handleUserPublished);
-    client.on("user-unpublished", handleUserUnpublished);
+    agoraClient.on("user-published", handleUserPublished);
+    agoraClient.on("user-unpublished", handleUserUnpublished);
     [ options.uid ] = await Promise.all([
-      client.join(options.appid, options.channel, options.token || null)
+      agoraClient.join(options.appid, options.channel, options.token || null)
     ]);
   }
 
@@ -57,7 +57,7 @@ const Viewer:React.VFC = () => {
   }
 
   async function subscribe(user, mediaType) {
-    await client.subscribe(user, mediaType);
+    await agoraClient.subscribe(user, mediaType);
     if (mediaType === 'video') {
       user.videoTrack.play(`player-${user.uid}`);
     }
@@ -69,6 +69,7 @@ const Viewer:React.VFC = () => {
 
 
   useEffect(() => {
+    agoraClient = AgoraRTC.createClient({ mode: "rtc", codec: "vp8" });
     join();
   }, []);
 
