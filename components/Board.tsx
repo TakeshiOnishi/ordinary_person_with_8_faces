@@ -3,7 +3,6 @@ import * as faceapi from "face-api.js";
 import { WithFaceExpressions, WithFaceDetection } from "face-api.js";
 import { css } from "linaria";
 import Cell from "./Cell";
-import AgoraRTC from 'agora-rtc-sdk-ng'
 import useStopwatch from "../lib/hooks/useStopwatch";
 import Stopwatch from "./Timer";
 
@@ -111,7 +110,6 @@ const Board: React.VFC = () => {
     },
   ];
 
-  let agoraClient:any;
   const faceVideoElm = useRef<HTMLVideoElement>(null);
   const faceCanvasElm = useRef<HTMLCanvasElement>(null);
   const cellRefs = useRef<any[]>([]);
@@ -137,17 +135,6 @@ const Board: React.VFC = () => {
     pause,
     reset,
   } = useStopwatch({ autoStart: false, offsetTimestamp: 500 });
-
-
-  let localTracks = {
-    videoTrack: null
-  };
-  const options = {
-    appid: process.env.NEXT_PUBLIC_AGORA_APP_ID,
-    channel: process.env.NEXT_PUBLIC_AGORA_CHANNEL_NAME,
-    uid: null,
-    token: process.env.NEXT_PUBLIC_AGORA_TEMP_TOKEN
-  };
 
   const isBingo = () :boolean => {
     return !Object.values(results).includes(false)
@@ -249,17 +236,7 @@ const Board: React.VFC = () => {
       .catch((errorMsg) => {
         console.log(errorMsg);
       });
-    join();
   };
-
-  async function join() {
-    [ options.uid, localTracks.videoTrack ] = await Promise.all([
-      agoraClient.join(options.appid, options.channel, options.token || null),
-      AgoraRTC.createScreenVideoTrack({}, "disable")
-    ]);
-    localTracks.videoTrack.play("local-player");
-    await agoraClient.publish(Object.values(localTracks));
-  }
 
   const sleep = (msec:number) => new Promise(resolve => setTimeout(resolve, msec));
 
@@ -281,7 +258,6 @@ const Board: React.VFC = () => {
   useEffect(() => {
     initCellRefs();
     startCam();
-    agoraClient = AgoraRTC.createClient({ mode: "rtc", codec: "vp8" });
   }, []);
 
   return (

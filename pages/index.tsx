@@ -1,7 +1,7 @@
 import Head from "next/head";
 import React from "react";
 import dynamic from 'next/dynamic'
-const Viewer = dynamic(import('../components/Viewer'), { ssr: false });
+const Board = dynamic(import('../components/Board'), { ssr: false });
 
 const Other:React.VFC = () => {
 
@@ -10,7 +10,7 @@ const Other:React.VFC = () => {
       <Head>
         <title>普通人8面相ゲーム</title>
       </Head>
-      <Viewer />
+      <Board />
     </>
   )
 };
