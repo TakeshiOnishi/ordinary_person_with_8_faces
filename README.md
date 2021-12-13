@@ -20,4 +20,7 @@
 
 ## Other
 
-[Qiita解説記事](https://qiita.com/water_resistant/private/e74b7b3c3cab24eee2d5)
+- 配信抜きのゲームだけデモ: https://agora-rm.d9fvybk2nkccq.amplifyapp.com/
+  - ID: agora
+  - PASS: agorawebsdk
+- [Qiita解説記事](https://qiita.com/water_resistant/items/e74b7b3c3cab24eee2d5)
